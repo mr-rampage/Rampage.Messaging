@@ -8,7 +8,7 @@ namespace Rampage.Messaging.Test
     public class IHubTest
     {
         [TestMethod]
-        public void TestStart()
+        public void TestStartAndStop()
         {
             var fixture = new HubService()
                 .Deploy(new FakeService())
@@ -23,10 +23,10 @@ namespace Rampage.Messaging.Test
 
             public void Start(IMessageBus messageBus)
             {
-                _unsubscribe = messageBus.Subscribe(Combinators.Warbler<IMessage>(RouteMessage));
+                _unsubscribe = messageBus.Subscribe(Combinators.Warbler<IMessage>(SelectHandler));
             }
 
-            private static Action<IMessage> RouteMessage(IMessage message)
+            private static Action<IMessage> SelectHandler(IMessage message)
             {
                 switch (message)
                 {
