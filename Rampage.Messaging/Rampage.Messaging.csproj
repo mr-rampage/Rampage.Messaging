@@ -43,10 +43,12 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="IHub.cs" />
         <Compile Include="IMessageBus.cs" />
         <Compile Include="Impl\Combinators.cs" />
         <Compile Include="Impl\DataFlowMessageBus.cs" />
         <Compile Include="Impl\EventMessageBus.cs" />
+        <Compile Include="Impl\HubService.cs" />
         <Compile Include="Impl\PLinqMessageBus.cs" />
         <Compile Include="Impl\ParallelMessageBus.cs" />
         <Compile Include="Impl\TaskMessageBus.cs" />
