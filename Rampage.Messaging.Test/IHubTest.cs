@@ -1,11 +1,13 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rampage.Messaging.Impl;
+using Rampage.Messaging.Bus;
+using Rampage.Messaging.Hub;
+using Rampage.Messaging.Utils;
 
 namespace Rampage.Messaging.Test
 {
     [TestClass]
-    public class IHubTest
+    public class HubTest
     {
         [TestMethod]
         public void TestStartAndStop()

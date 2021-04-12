@@ -43,16 +43,16 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Hub\HubService.cs" />
         <Compile Include="IHub.cs" />
         <Compile Include="IMessageBus.cs" />
-        <Compile Include="Impl\Combinators.cs" />
-        <Compile Include="Impl\DataFlowMessageBus.cs" />
-        <Compile Include="Impl\EventMessageBus.cs" />
-        <Compile Include="Impl\HubService.cs" />
-        <Compile Include="Impl\PLinqMessageBus.cs" />
-        <Compile Include="Impl\ParallelMessageBus.cs" />
-        <Compile Include="Impl\TaskMessageBus.cs" />
+        <Compile Include="Bus\DataFlowMessageBus.cs" />
+        <Compile Include="Bus\EventMessageBus.cs" />
+        <Compile Include="Bus\PLinqMessageBus.cs" />
+        <Compile Include="Bus\ParallelMessageBus.cs" />
+        <Compile Include="Bus\TaskMessageBus.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Utils\Combinators.cs" />
     </ItemGroup>
     <ItemGroup>
       <None Include="packages.config" />

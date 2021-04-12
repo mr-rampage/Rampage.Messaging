@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Rampage.Messaging.Impl
+namespace Rampage.Messaging.Utils
 {
     public static class Combinators
     {

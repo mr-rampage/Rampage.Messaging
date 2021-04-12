@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
+using Rampage.Messaging.Utils;
 
-namespace Rampage.Messaging.Impl
+namespace Rampage.Messaging.Bus
 {
-    public sealed class PLinqMessageBus : IMessageBus
+    public sealed class ParallelMessageBus : IMessageBus
     {
         private readonly List<Action<IMessage>> _subscribers = new List<Action<IMessage>>();
 
         public void Publish(IMessage message)
         {
-            foreach (var handler in _subscribers.AsParallel())
-                handler.Invoke(message);
+            Parallel.ForEach(_subscribers, Combinators.Thrush(message));
         }
 
         public Unsubscribe Subscribe<T>(Action<T> handler) where T : IMessage

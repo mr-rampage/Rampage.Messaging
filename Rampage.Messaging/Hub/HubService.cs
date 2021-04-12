@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Rampage.Messaging.Impl
+namespace Rampage.Messaging.Hub
 {
     public class HubService: IHub
     {

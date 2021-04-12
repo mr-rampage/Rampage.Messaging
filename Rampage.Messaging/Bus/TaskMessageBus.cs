@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Rampage.Messaging.Utils;
 
-namespace Rampage.Messaging.Impl
+namespace Rampage.Messaging.Bus
 {
     public sealed class TaskMessageBus : IMessageBus
     {

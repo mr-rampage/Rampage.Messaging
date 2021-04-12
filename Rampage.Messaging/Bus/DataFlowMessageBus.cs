@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks.Dataflow;
 
-namespace Rampage.Messaging.Impl
+namespace Rampage.Messaging.Bus
 {
     public sealed class DataFlowMessageBus : IMessageBus, IDisposable
     {

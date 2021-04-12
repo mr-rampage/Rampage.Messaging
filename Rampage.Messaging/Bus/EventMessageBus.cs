@@ -1,6 +1,7 @@
 ﻿using System;
+using Rampage.Messaging.Utils;
 
-namespace Rampage.Messaging.Impl
+namespace Rampage.Messaging.Bus
 {
     public sealed class EventMessageBus: IMessageBus, IDisposable
     {
