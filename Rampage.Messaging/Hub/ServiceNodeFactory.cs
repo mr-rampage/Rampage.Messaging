@@ -15,7 +15,7 @@ namespace Rampage.Messaging.Hub
         public ServiceNodeFactory()
         {
             var instance = Activator.CreateInstance<T>();
-            var methodInfo = typeof(T).GetMethods(BindingFlags.Public | BindingFlags.Instance);
+            var methodInfo = typeof(T).GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
             var dictionary = methodInfo
                 .Where(IsMessageHandler)
                 .ToDictionary(GetMessageType, GetMessageHandler(instance));

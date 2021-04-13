@@ -13,13 +13,45 @@ namespace Rampage.Messaging.Test
         {
             var bus = new ParallelMessageBus();
             var fixture = new HubNode()
-                .Deploy(new ServiceNodeFactory<FakeService>())
+                .Deploy(new FakeServiceNode(new FakeService()))
                 .Deploy(new ServiceNodeFactory<FakeService>());
             fixture.Start(bus);
             bus.Publish(new FakeService.DoWorkA());
             bus.Publish(new FakeService.DoWorkB());
             bus.Publish(new FakeService.DoWorkC());
             fixture.Stop();
+        }
+
+        private sealed class FakeServiceNode: IServiceNode
+        {
+            private readonly FakeService _fakeService;
+            private Unsubscribe _unsubscribe;
+
+            public FakeServiceNode(FakeService fakeService)
+            {
+                _fakeService = fakeService;
+            }
+
+            public void Start(IMessageBus messageBus)
+            {
+                _unsubscribe = messageBus.Subscribe(message =>
+                {
+                    switch (message)
+                    {
+                        case FakeService.DoWorkA workA:
+                            _fakeService.HandleWorkA(workA);
+                            break;
+                        case FakeService.DoWorkB workB:
+                            _fakeService.HandleWorkB(workB);
+                            break;
+                    }
+                });
+            }
+
+            public void Stop()
+            {
+                _unsubscribe();
+            }
         }
 
         private sealed class FakeService
