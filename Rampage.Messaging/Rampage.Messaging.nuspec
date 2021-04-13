@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Mr. Rampage</authors>
+    <owners>$author$</owners>
+    <license type="expression">CC0-1.0</license>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Simple Message Bus</description>
+    <releaseNotes>Initial Release</releaseNotes>
+    <copyright>Copyright 2021</copyright>
+    <tags>messaging event-bus</tags>
+    <repository type="git" url="https://github.com/mr-rampage/rampage-messaging.git" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.8" />
+    </dependencies>
+  </metadata>
+</package>
