@@ -17,14 +17,8 @@ namespace Rampage.Messaging.Hub
             var instance = Activator.CreateInstance<T>();
             var methodInfo = typeof(T).GetMethods(BindingFlags.Public | BindingFlags.Instance);
             var dictionary = methodInfo
-                .Where(method => method.ReturnType == typeof(void)
-                                 && method.GetParameters().Length == 1
-                                 && method.GetParameters().First().ParameterType.GetInterfaces()
-                                     .Contains(typeof(IMessage)))
-                .ToDictionary<MethodInfo, Type, Action<IMessage>>(
-                    method => method.GetParameters().First().ParameterType,
-                    method => message => method.Invoke(instance, new object[] {message}));
-
+                .Where(IsMessageHandler)
+                .ToDictionary(GetMessageType, GetMessageHandler(instance));
             _handlerByMessageType = new ReadOnlyDictionary<Type, Action<IMessage>>(dictionary);
         }
 
@@ -33,16 +27,22 @@ namespace Rampage.Messaging.Hub
             _unsubscribe = messageBus.Subscribe(Combinators.Warbler<IMessage>(SelectHandler));
         }
 
-        private Action<IMessage> SelectHandler(IMessage message)
-        {
-            return _handlerByMessageType.ContainsKey(message.GetType())
+        private Action<IMessage> SelectHandler(IMessage message) =>
+            _handlerByMessageType.ContainsKey(message.GetType())
                 ? _handlerByMessageType[message.GetType()]
                 : _ => { };
-        }
 
-        public void Stop()
-        {
-            _unsubscribe();
-        }
+        public void Stop() => _unsubscribe();
+
+        private static bool IsMessageHandler(MethodInfo method) =>
+            method.ReturnType == typeof(void) && method.GetParameters().Length == 1 && method.GetParameters()
+                .First()
+                .ParameterType.GetInterfaces()
+                .Contains(typeof(IMessage));
+        
+        private static Type GetMessageType(MethodInfo method) => method.GetParameters().First().ParameterType;
+
+        private static Func<MethodInfo, Action<IMessage>> GetMessageHandler(T instance) =>
+            method => message => method.Invoke(instance, new object[] {message});
     }
 }
