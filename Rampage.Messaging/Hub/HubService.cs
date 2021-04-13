@@ -22,11 +22,8 @@ namespace Rampage.Messaging.Hub
 
         public IHub Undeploy(IService service)
         {
+            service.Stop();
             _services.Remove(service);
-            if (service is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
 
             return this;
         }
@@ -35,6 +32,10 @@ namespace Rampage.Messaging.Hub
         {
             if (_state != State.Stopped) return;
             _messageBus = messageBus;
+            
+            foreach (var service in _services)
+                service.Start(_messageBus);
+            
             _messageBus.Publish(new HubStarted());
             _state = State.Started;
         }
@@ -43,15 +44,14 @@ namespace Rampage.Messaging.Hub
         {
             if (_state != State.Started) return;
             
-            _messageBus.Publish(new HubStopped());
-            if (_messageBus is IDisposable disposableHub)
-                disposableHub.Dispose();
-            
+            if (_messageBus is IDisposable disposable)
+                disposable.Dispose();
+
             foreach (var service in _services)
-                if (service is IDisposable disposableService)
-                    disposableService.Dispose();
+                service.Stop();
             _services.Clear();
             
+            _messageBus.Publish(new HubStopped());
             _state = State.Stopped;
         }
     }

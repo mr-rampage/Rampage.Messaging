@@ -1,5 +1,4 @@
 ﻿using System;
-using Rampage.Messaging.Utils;
 
 namespace Rampage.Messaging.Bus
 {
@@ -14,10 +13,9 @@ namespace Rampage.Messaging.Bus
             OnMessageHandler?.Invoke(message);
         }
 
-        public Unsubscribe Subscribe<T>(Action<T> handler) where T : IMessage
+        public Unsubscribe Subscribe(Action<IMessage> handler)
         {
-            var f = Combinators.ApplyForType(handler);
-            void EventHandler(IMessage e) => f(e);
+            void EventHandler(IMessage e) => handler(e);
             OnMessageHandler += EventHandler;
             return () => OnMessageHandler -= EventHandler;
         }

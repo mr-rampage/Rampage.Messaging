@@ -14,11 +14,10 @@ namespace Rampage.Messaging.Bus
             Parallel.ForEach(_subscribers, Combinators.Thrush(message));
         }
 
-        public Unsubscribe Subscribe<T>(Action<T> handler) where T : IMessage
+        public Unsubscribe Subscribe(Action<IMessage> handler)
         {
-            var f = Combinators.ApplyForType(handler);
-            _subscribers.Add(f);
-            return () => _subscribers.Remove(f);
+            _subscribers.Add(handler);
+            return () => _subscribers.Remove(handler);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Rampage.Messaging.Test
         public async Task TestPublish(IMessageBus fixture)
         {
             var handlers =
-                new List<(Action<FakeEventMessage> handler, TaskCompletionSource<List<FakeEventMessage>> promise)>
+                new List<(Action<IMessage> handler, TaskCompletionSource<List<IMessage>> promise)>
                 {
                     CaptureMessages(3), 
                     CaptureMessages(3),
@@ -43,7 +43,6 @@ namespace Rampage.Messaging.Test
                 fixture.Subscribe(handler);
             }
 
-            fixture.Subscribe(CreateNever());
             fixture.Publish(new FakeEventMessage {Value = 1});
             fixture.Publish(new FakeEventMessage {Value = 2});
             fixture.Publish(new FakeEventMessage {Value = 3});
@@ -73,7 +72,6 @@ namespace Rampage.Messaging.Test
         {
             var (handler, promise) = CaptureMessages(3);
             var unsubscribe = fixture.Subscribe(handler);
-            fixture.Subscribe(CreateNever());
             unsubscribe();
             fixture.Publish(new FakeEventMessage {Value = 1});
             fixture.Publish(new FakeEventMessage {Value = 2});
@@ -84,14 +82,14 @@ namespace Rampage.Messaging.Test
 
         private static readonly Random Random = new Random(new DateTime().Millisecond);
 
-        private static (Action<FakeEventMessage> handler, TaskCompletionSource<List<FakeEventMessage>> promise)
+        private static (Action<IMessage> handler, TaskCompletionSource<List<IMessage>> promise)
             CaptureMessages(uint messageCount)
         {
-            var capturedMessages = new List<FakeEventMessage>();
-            var promise = new TaskCompletionSource<List<FakeEventMessage>>();
+            var capturedMessages = new List<IMessage>();
+            var promise = new TaskCompletionSource<List<IMessage>>();
             return (Handler, promise);
 
-            async void Handler(FakeEventMessage message)
+            async void Handler(IMessage message)
             {
                 capturedMessages.Add(message);
                 await Task.Delay(Random.Next(0, 100));
@@ -99,19 +97,6 @@ namespace Rampage.Messaging.Test
             }
         }
 
-        private static Action<NeverMessage> CreateNever()
-        {
-            return message =>
-            {
-                Assert.Fail("Should never process a NeverMessage.");
-            };
-        }
-
-        private struct NeverMessage : IMessage
-        {
-            
-        }
-            
         private struct FakeEventMessage : IMessage
         {
             public double Value { get; set; }

@@ -1,8 +1,7 @@
-﻿using System;
+﻿using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rampage.Messaging.Bus;
 using Rampage.Messaging.Hub;
-using Rampage.Messaging.Utils;
 
 namespace Rampage.Messaging.Test
 {
@@ -12,58 +11,40 @@ namespace Rampage.Messaging.Test
         [TestMethod]
         public void TestStartAndStop()
         {
+            var bus = new ParallelMessageBus();
             var fixture = new HubService()
-                .Deploy(new FakeService())
-                .Deploy(new FakeService());
-            fixture.Start(new ParallelMessageBus());
+                .Deploy(new ServiceProxy<FakeService>())
+                .Deploy(new ServiceProxy<FakeService>());
+            fixture.Start(bus);
+            bus.Publish(new FakeService.DoWorkA());
+            bus.Publish(new FakeService.DoWorkB());
+            bus.Publish(new FakeService.DoWorkC());
             fixture.Stop();
         }
 
-        private sealed class FakeService: IService
+        private sealed class FakeService
         {
-            private Unsubscribe _unsubscribe;
-
-            public void Start(IMessageBus messageBus)
+            public void HandleWorkA(DoWorkA workA)
             {
-                _unsubscribe = messageBus.Subscribe(Combinators.Warbler<IMessage>(SelectHandler));
+                Trace.WriteLine("A was called");
             }
 
-            private static Action<IMessage> SelectHandler(IMessage message)
+            public void HandleWorkB(DoWorkB workB)
             {
-                switch (message)
-                {
-                    case DoWorkA _ : return HandleWorkA;
-                    case DoWorkB _ : return HandleWorkB;
-                    case DoWorkC _ : return HandleWorkC;
-                }
-
-                return _ => { };
+                Trace.WriteLine("B was called");
             }
 
-            private static void HandleWorkA(IMessage message)
+            public readonly struct DoWorkA : IMessage
             {
-                
-            }
-            
-            private static void HandleWorkB(IMessage message)
-            {
-                
-            }
-            
-            private static void HandleWorkC(IMessage message)
-            {
-                
             }
 
-            public void Stop()
+            public readonly struct DoWorkB : IMessage
             {
-                _unsubscribe();
             }
-            
-            public readonly struct DoWorkA : IMessage {}
-            public readonly struct DoWorkB : IMessage {}
-            public readonly struct DoWorkC : IMessage {}
+
+            public readonly struct DoWorkC : IMessage
+            {
+            }
         }
-        
     }
 }

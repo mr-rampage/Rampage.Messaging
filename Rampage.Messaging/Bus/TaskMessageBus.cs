@@ -16,11 +16,10 @@ namespace Rampage.Messaging.Bus
             _lastTask = _lastTask.ContinueWith(_ => Task.WhenAll(_subscribers.Select(Combinators.ThrushAsync(message))).Wait());
         }
 
-        public Unsubscribe Subscribe<T>(Action<T> handler) where T : IMessage
+        public Unsubscribe Subscribe(Action<IMessage> handler)
         {
-            var f = Combinators.ApplyForType(handler);
-            _subscribers.Add(f);
-            return () => _subscribers.Remove(f);
+            _subscribers.Add(handler);
+            return () => _subscribers.Remove(handler);
         }
     }
 }

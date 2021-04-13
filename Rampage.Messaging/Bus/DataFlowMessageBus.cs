@@ -25,10 +25,10 @@ namespace Rampage.Messaging.Bus
             _mailBox.SendAsync(message);
         }
 
-        public Unsubscribe Subscribe<T>(Action<T> handler) where T : IMessage
+        public Unsubscribe Subscribe(Action<IMessage> handler)
         {
-            var actionBlock = new ActionBlock<IMessage>(message => handler((T) message));
-            var disposable = _broadcast.LinkTo(actionBlock, message => message.GetType() == typeof(T));
+            var actionBlock = new ActionBlock<IMessage>(handler);
+            var disposable = _broadcast.LinkTo(actionBlock);
             _cleanup.Add(disposable);
             return () =>
             {
