@@ -43,8 +43,8 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Hub\HubService.cs" />
-        <Compile Include="Hub\ServiceProxy.cs" />
+        <Compile Include="Hub\HubNode.cs" />
+        <Compile Include="Hub\ServiceNodeFactory.cs" />
         <Compile Include="IHub.cs" />
         <Compile Include="IMessageBus.cs" />
         <Compile Include="Bus\DataFlowMessageBus.cs" />

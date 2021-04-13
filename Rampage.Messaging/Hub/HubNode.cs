@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Rampage.Messaging.Hub
 {
-    public class HubService: IHub
+    public class HubNode: IHub
     {
         private enum State
         {
@@ -12,18 +12,18 @@ namespace Rampage.Messaging.Hub
 
         private State _state = State.Stopped;
         private IMessageBus _messageBus;
-        private readonly List<IService> _services = new List<IService>();
+        private readonly List<IServiceNode> _services = new List<IServiceNode>();
         
-        public IHub Deploy(IService service)
+        public IHub Deploy(IServiceNode serviceNode)
         {
-            _services.Add(service);
+            _services.Add(serviceNode);
             return this;
         }
 
-        public IHub Undeploy(IService service)
+        public IHub Undeploy(IServiceNode serviceNode)
         {
-            service.Stop();
-            _services.Remove(service);
+            serviceNode.Stop();
+            _services.Remove(serviceNode);
 
             return this;
         }

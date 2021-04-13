@@ -6,13 +6,13 @@ using Rampage.Messaging.Utils;
 
 namespace Rampage.Messaging.Hub
 {
-    public sealed class ServiceProxy<T> : IService
+    public sealed class ServiceNodeFactory<T> : IServiceNode
     {
         private Unsubscribe _unsubscribe;
 
         private readonly ReadOnlyDictionary<Type, Action<IMessage>> _handlerByMessageType;
 
-        public ServiceProxy()
+        public ServiceNodeFactory()
         {
             var instance = Activator.CreateInstance<T>();
             var methodInfo = typeof(T).GetMethods(BindingFlags.Public | BindingFlags.Instance);

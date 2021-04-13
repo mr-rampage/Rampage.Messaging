@@ -12,9 +12,9 @@ namespace Rampage.Messaging.Test
         public void TestStartAndStop()
         {
             var bus = new ParallelMessageBus();
-            var fixture = new HubService()
-                .Deploy(new ServiceProxy<FakeService>())
-                .Deploy(new ServiceProxy<FakeService>());
+            var fixture = new HubNode()
+                .Deploy(new ServiceNodeFactory<FakeService>())
+                .Deploy(new ServiceNodeFactory<FakeService>());
             fixture.Start(bus);
             bus.Publish(new FakeService.DoWorkA());
             bus.Publish(new FakeService.DoWorkB());
