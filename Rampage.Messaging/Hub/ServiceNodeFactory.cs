@@ -6,7 +6,7 @@ using Rampage.Messaging.Utils;
 
 namespace Rampage.Messaging.Hub
 {
-    public sealed class ServiceNodeFactory<T, TMessage> : IServiceNode<TMessage>
+    public sealed class ServiceNodeFactory<TService, TMessage> : IServiceNode<TMessage>
     {
         private Unsubscribe _unsubscribe;
 
@@ -14,8 +14,8 @@ namespace Rampage.Messaging.Hub
 
         public ServiceNodeFactory()
         {
-            var instance = Activator.CreateInstance<T>();
-            var methodInfo = typeof(T).GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
+            var instance = Activator.CreateInstance<TService>();
+            var methodInfo = typeof(TService).GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
             var dictionary = methodInfo
                 .Where(IsMessageHandler)
                 .ToDictionary(GetMessageType, GetMessageHandler(instance));
@@ -42,7 +42,7 @@ namespace Rampage.Messaging.Hub
         
         private static Type GetMessageType(MethodInfo method) => method.GetParameters().First().ParameterType;
 
-        private static Func<MethodInfo, Action<TMessage>> GetMessageHandler(T instance) =>
+        private static Func<MethodInfo, Action<TMessage>> GetMessageHandler(TService instance) =>
             method => message => method.Invoke(instance, new object[] {message});
     }
 }
