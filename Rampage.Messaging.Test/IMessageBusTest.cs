@@ -99,7 +99,7 @@ namespace Rampage.Messaging.Test
 
         private struct FakeEventMessage : IMessage
         {
-            public double Value { get; set; }
+            public double Value { get; init; }
         }
     }
 }

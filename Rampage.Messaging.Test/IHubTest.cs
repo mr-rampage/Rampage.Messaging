@@ -42,7 +42,7 @@ namespace Rampage.Messaging.Test
                             _fakeService.HandleWorkA(workA);
                             break;
                         case FakeService.DoWorkB workB:
-                            _fakeService.HandleWorkB(workB);
+                            FakeService.HandleWorkB(workB);
                             break;
                     }
                 });
@@ -56,12 +56,12 @@ namespace Rampage.Messaging.Test
 
         private sealed class FakeService
         {
-            public void HandleWorkA(DoWorkA workA)
+            public void HandleWorkA(DoWorkA _workA)
             {
                 Trace.WriteLine("A was called");
             }
 
-            public void HandleWorkB(DoWorkB workB)
+            public static void HandleWorkB(DoWorkB _workB)
             {
                 Trace.WriteLine("B was called");
             }
