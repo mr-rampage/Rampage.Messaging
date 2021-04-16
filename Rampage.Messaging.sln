@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rampage.Messaging", "Rampage.Messaging\Rampage.Messaging.csproj", "{F930C4B2-1B93-43E7-831D-BDF4158FE60E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rampage.Messaging", "Rampage.Messaging\Rampage.Messaging.csproj", "{AD737B28-22AE-4BC4-B7CF-00BF760F6935}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rampage.Messaging.Test", "Rampage.Messaging.Test\Rampage.Messaging.Test.csproj", "{729F2F82-F32F-462D-BC62-6555A4F0450D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rampage.Messaging.Test", "Rampage.Messaging.Test\Rampage.Messaging.Test.csproj", "{10E35FB7-3322-4A99-9715-9F3DF4EECA4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,13 +10,13 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F930C4B2-1B93-43E7-831D-BDF4158FE60E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F930C4B2-1B93-43E7-831D-BDF4158FE60E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F930C4B2-1B93-43E7-831D-BDF4158FE60E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F930C4B2-1B93-43E7-831D-BDF4158FE60E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{729F2F82-F32F-462D-BC62-6555A4F0450D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{729F2F82-F32F-462D-BC62-6555A4F0450D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{729F2F82-F32F-462D-BC62-6555A4F0450D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{729F2F82-F32F-462D-BC62-6555A4F0450D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD737B28-22AE-4BC4-B7CF-00BF760F6935}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD737B28-22AE-4BC4-B7CF-00BF760F6935}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD737B28-22AE-4BC4-B7CF-00BF760F6935}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD737B28-22AE-4BC4-B7CF-00BF760F6935}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10E35FB7-3322-4A99-9715-9F3DF4EECA4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10E35FB7-3322-4A99-9715-9F3DF4EECA4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10E35FB7-3322-4A99-9715-9F3DF4EECA4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10E35FB7-3322-4A99-9715-9F3DF4EECA4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
