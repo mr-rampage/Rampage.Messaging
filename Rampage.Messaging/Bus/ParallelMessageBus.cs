@@ -5,16 +5,16 @@ using Rampage.Messaging.Utils;
 
 namespace Rampage.Messaging.Bus
 {
-    public sealed class ParallelMessageBus : IMessageBus
+    public sealed class ParallelMessageBus<T> : IMessageBus<T>
     {
-        private readonly List<Action<IMessage>> _subscribers = new List<Action<IMessage>>();
+        private readonly List<Action<T>> _subscribers = new List<Action<T>>();
 
-        public void Publish(IMessage message)
+        public void Publish(T message)
         {
             Parallel.ForEach(_subscribers, Combinators.Thrush(message));
         }
 
-        public Unsubscribe Subscribe(Action<IMessage> handler)
+        public Unsubscribe Subscribe(Action<T> handler)
         {
             _subscribers.Add(handler);
             return () => _subscribers.Remove(handler);

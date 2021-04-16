@@ -6,11 +6,11 @@ using Rampage.Messaging.Utils;
 
 namespace Rampage.Messaging.Hub
 {
-    public sealed class ServiceNodeFactory<T> : IServiceNode
+    public sealed class ServiceNodeFactory<T, TMessage> : IServiceNode<TMessage>
     {
         private Unsubscribe _unsubscribe;
 
-        private readonly ReadOnlyDictionary<Type, Action<IMessage>> _handlerByMessageType;
+        private readonly ReadOnlyDictionary<Type, Action<TMessage>> _handlerByMessageType;
 
         public ServiceNodeFactory()
         {
@@ -19,15 +19,15 @@ namespace Rampage.Messaging.Hub
             var dictionary = methodInfo
                 .Where(IsMessageHandler)
                 .ToDictionary(GetMessageType, GetMessageHandler(instance));
-            _handlerByMessageType = new ReadOnlyDictionary<Type, Action<IMessage>>(dictionary);
+            _handlerByMessageType = new ReadOnlyDictionary<Type, Action<TMessage>>(dictionary);
         }
 
-        public void Start(IMessageBus messageBus)
+        public void Start(IMessageBus<TMessage> messageBus)
         {
-            _unsubscribe = messageBus.Subscribe(Combinators.Warbler<IMessage>(SelectHandler));
+            _unsubscribe = messageBus.Subscribe(Combinators.Warbler<TMessage>(SelectHandler));
         }
 
-        private Action<IMessage> SelectHandler(IMessage message) =>
+        private Action<TMessage> SelectHandler(TMessage message) =>
             _handlerByMessageType.ContainsKey(message.GetType())
                 ? _handlerByMessageType[message.GetType()]
                 : _ => { };
@@ -38,11 +38,11 @@ namespace Rampage.Messaging.Hub
             method.ReturnType == typeof(void) && method.GetParameters().Length == 1 && method.GetParameters()
                 .First()
                 .ParameterType.GetInterfaces()
-                .Contains(typeof(IMessage));
+                .Contains(typeof(TMessage));
         
         private static Type GetMessageType(MethodInfo method) => method.GetParameters().First().ParameterType;
 
-        private static Func<MethodInfo, Action<IMessage>> GetMessageHandler(T instance) =>
+        private static Func<MethodInfo, Action<TMessage>> GetMessageHandler(T instance) =>
             method => message => method.Invoke(instance, new object[] {message});
     }
 }

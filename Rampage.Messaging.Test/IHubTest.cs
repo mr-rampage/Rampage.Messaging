@@ -11,10 +11,10 @@ namespace Rampage.Messaging.Test
         [TestMethod]
         public void TestStartAndStop()
         {
-            var bus = new ParallelMessageBus();
-            var fixture = new HubNode()
+            var bus = new ParallelMessageBus<FakeService.IMessage>();
+            var fixture = new HubNode<FakeService.IMessage>()
                 .Deploy(new FakeServiceNode(new FakeService()))
-                .Deploy(new ServiceNodeFactory<FakeService>());
+                .Deploy(new ServiceNodeFactory<FakeService, FakeService.IMessage>());
             fixture.Start(bus);
             bus.Publish(new FakeService.DoWorkA());
             bus.Publish(new FakeService.DoWorkB());
@@ -22,7 +22,7 @@ namespace Rampage.Messaging.Test
             fixture.Stop();
         }
 
-        private sealed class FakeServiceNode: IServiceNode
+        private sealed class FakeServiceNode: IServiceNode<FakeService.IMessage>
         {
             private readonly FakeService _fakeService;
             private Unsubscribe _unsubscribe;
@@ -32,7 +32,7 @@ namespace Rampage.Messaging.Test
                 _fakeService = fakeService;
             }
 
-            public void Start(IMessageBus messageBus)
+            public void Start(IMessageBus<FakeService.IMessage> messageBus)
             {
                 _unsubscribe = messageBus.Subscribe(message =>
                 {
@@ -56,6 +56,8 @@ namespace Rampage.Messaging.Test
 
         private sealed class FakeService
         {
+            public interface IMessage {}
+            
             public void HandleWorkA(DoWorkA _workA)
             {
                 Trace.WriteLine("A was called");

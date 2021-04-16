@@ -2,20 +2,20 @@
 
 namespace Rampage.Messaging.Bus
 {
-    public sealed class EventMessageBus: IMessageBus, IDisposable
+    public sealed class EventMessageBus<T>: IMessageBus<T>, IDisposable
     {
-        private delegate void MessageEventHandler(IMessage e);
+        private delegate void MessageEventHandler(T e);
 
         private event MessageEventHandler OnMessageHandler;
 
-        public void Publish(IMessage message)
+        public void Publish(T message)
         {
             OnMessageHandler?.Invoke(message);
         }
 
-        public Unsubscribe Subscribe(Action<IMessage> handler)
+        public Unsubscribe Subscribe(Action<T> handler)
         {
-            void EventHandler(IMessage e) => handler(e);
+            void EventHandler(T e) => handler(e);
             OnMessageHandler += EventHandler;
             return () => OnMessageHandler -= EventHandler;
         }

@@ -4,13 +4,9 @@ namespace Rampage.Messaging
 {
     public delegate void Unsubscribe();
     
-    public interface IMessageBus
+    public interface IMessageBus<T>
     {
-        void Publish(IMessage message);
-        Unsubscribe Subscribe(Action<IMessage> handler);
-    }
-
-    public interface IMessage
-    {
+        void Publish(T message);
+        Unsubscribe Subscribe(Action<T> handler);
     }
 }

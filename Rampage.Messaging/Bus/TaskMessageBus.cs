@@ -6,17 +6,17 @@ using Rampage.Messaging.Utils;
 
 namespace Rampage.Messaging.Bus
 {
-    public sealed class TaskMessageBus : IMessageBus
+    public sealed class TaskMessageBus<T> : IMessageBus<T>
     {
-        private readonly List<Action<IMessage>> _subscribers = new List<Action<IMessage>>();
+        private readonly List<Action<T>> _subscribers = new List<Action<T>>();
         private Task _lastTask = Task.CompletedTask;
 
-        public void Publish(IMessage message)
+        public void Publish(T message)
         {
             _lastTask = _lastTask.ContinueWith(_ => Task.WhenAll(_subscribers.Select(Combinators.ThrushAsync(message))).Wait());
         }
 
-        public Unsubscribe Subscribe(Action<IMessage> handler)
+        public Unsubscribe Subscribe(Action<T> handler)
         {
             _subscribers.Add(handler);
             return () => _subscribers.Remove(handler);

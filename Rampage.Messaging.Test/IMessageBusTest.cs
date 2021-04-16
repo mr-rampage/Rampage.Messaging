@@ -12,22 +12,22 @@ namespace Rampage.Messaging.Test
     {
         public static IEnumerable<object[]> Implementations()
         {
-            yield return new object[] {new DataFlowMessageBus()};
-            yield return new object[] {new EventMessageBus()};
-            yield return new object[] {new ParallelMessageBus()};
-            yield return new object[] {new PLinqMessageBus()};
-            yield return new object[] {new TaskMessageBus()};
+            yield return new object[] {new DataFlowMessageBus<IMessage>()};
+            yield return new object[] {new EventMessageBus<IMessage>()};
+            yield return new object[] {new ParallelMessageBus<IMessage>()};
+            yield return new object[] {new PLinqMessageBus<IMessage>()};
+            yield return new object[] {new TaskMessageBus<IMessage>()};
         }
 
         [TestMethod]
         public async Task TestTaskPublish()
         {
-            await TestPublish(new TaskMessageBus());
+            await TestPublish(new TaskMessageBus<IMessage>());
         }
 
         [DataTestMethod]
         [DynamicData(nameof(Implementations), DynamicDataSourceType.Method)]
-        public async Task TestPublish(IMessageBus fixture)
+        public async Task TestPublish(IMessageBus<IMessage> fixture)
         {
             var handlers =
                 new List<(Action<IMessage> handler, TaskCompletionSource<List<IMessage>> promise)>
@@ -68,7 +68,7 @@ namespace Rampage.Messaging.Test
 
         [DataTestMethod]
         [DynamicData(nameof(Implementations), DynamicDataSourceType.Method)]
-        public void TestUnsubscribe(IMessageBus fixture)
+        public void TestUnsubscribe(IMessageBus<IMessage> fixture)
         {
             var (handler, promise) = CaptureMessages(3);
             var unsubscribe = fixture.Subscribe(handler);
@@ -79,6 +79,9 @@ namespace Rampage.Messaging.Test
 
             Assert.IsFalse(promise.Task.IsCompleted, "Should not process messages if unsubscribed");
         }
+
+        public interface IMessage
+        {}
 
         private static readonly Random Random = new Random(new DateTime().Millisecond);
 

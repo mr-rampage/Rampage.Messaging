@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Rampage.Messaging.Hub
 {
-    public class HubNode: IHub
+    public class HubNode<T>: IHub<T>
     {
         private enum State
         {
@@ -11,16 +11,16 @@ namespace Rampage.Messaging.Hub
         }
 
         private State _state = State.Stopped;
-        private IMessageBus _messageBus;
-        private readonly List<IServiceNode> _services = new List<IServiceNode>();
+        private IMessageBus<T> _messageBus;
+        private readonly List<IServiceNode<T>> _services = new List<IServiceNode<T>>();
         
-        public IHub Deploy(IServiceNode serviceNode)
+        public IHub<T> Deploy(IServiceNode<T> serviceNode)
         {
             _services.Add(serviceNode);
             return this;
         }
 
-        public IHub Undeploy(IServiceNode serviceNode)
+        public IHub<T> Undeploy(IServiceNode<T> serviceNode)
         {
             serviceNode.Stop();
             _services.Remove(serviceNode);
@@ -28,7 +28,7 @@ namespace Rampage.Messaging.Hub
             return this;
         }
 
-        public void Start(IMessageBus messageBus)
+        public void Start(IMessageBus<T> messageBus)
         {
             if (_state != State.Stopped) return;
             _messageBus = messageBus;
@@ -36,7 +36,6 @@ namespace Rampage.Messaging.Hub
             foreach (var service in _services)
                 service.Start(_messageBus);
             
-            _messageBus.Publish(new HubStarted());
             _state = State.Started;
         }
 
@@ -51,18 +50,7 @@ namespace Rampage.Messaging.Hub
                 service.Stop();
             _services.Clear();
             
-            _messageBus.Publish(new HubStopped());
             _state = State.Stopped;
         }
-    }
-
-    public readonly struct HubStarted : IMessage
-    {
-        
-    }
-
-    public readonly struct HubStopped : IMessage
-    {
-        
     }
 }

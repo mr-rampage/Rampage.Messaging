@@ -1,14 +1,14 @@
 ﻿namespace Rampage.Messaging
 {
-    public interface IServiceNode
+    public interface IServiceNode<T>
     {
-        void Start(IMessageBus messageBus);
+        void Start(IMessageBus<T> messageBus);
         void Stop();
     }
 
-    public interface IHub : IServiceNode
+    public interface IHub<T> : IServiceNode<T>
     {
-        IHub Deploy(IServiceNode serviceNode);
-        IHub Undeploy(IServiceNode serviceNode);
+        IHub<T> Deploy(IServiceNode<T> serviceNode);
+        IHub<T> Undeploy(IServiceNode<T> serviceNode);
     }
 }
