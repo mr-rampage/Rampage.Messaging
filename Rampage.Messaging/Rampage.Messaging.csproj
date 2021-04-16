@@ -5,6 +5,15 @@
         <PackageVersion>0.0.2</PackageVersion>
         <AssemblyVersion>0.0.2</AssemblyVersion>
         <FileVersion>0.0.2</FileVersion>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>Mr. Rampage</Authors>
+        <Description>Simple internal messaging bus</Description>
+        <PackageProjectUrl>https://github.com/mr-rampage/rampage-messaging</PackageProjectUrl>
+        <PackageLicenseUrl>https://creativecommons.org/choose/zero/</PackageLicenseUrl>
+        <RepositoryUrl>https://github.com/mr-rampage/rampage-messaging.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>message-bus eventbus csharp</PackageTags>
+        <PackageReleaseNotes>0.0.2 - Upgraded to .NET 5.0</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
