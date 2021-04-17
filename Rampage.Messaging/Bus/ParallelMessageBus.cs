@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Rampage.Messaging.Utils;
 
 namespace Rampage.Messaging.Bus
 {
@@ -11,7 +10,7 @@ namespace Rampage.Messaging.Bus
 
         public void Publish(T message)
         {
-            Parallel.ForEach(_subscribers, Combinators.Thrush(message));
+            Parallel.ForEach(_subscribers, action => action(message));
         }
 
         public Unsubscribe Subscribe(Action<T> handler)

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Rampage.Messaging.Utils;
 
 namespace Rampage.Messaging.Bus
 {
@@ -13,7 +12,7 @@ namespace Rampage.Messaging.Bus
 
         public void Publish(T message)
         {
-            _lastTask = _lastTask.ContinueWith(_ => Task.WhenAll(_subscribers.Select(Combinators.ThrushAsync(message))).Wait());
+            _lastTask = _lastTask.ContinueWith(_ => Task.WhenAll(_subscribers.Select(action => Task.Run(() => action(message)))).Wait());
         }
 
         public Unsubscribe Subscribe(Action<T> handler)

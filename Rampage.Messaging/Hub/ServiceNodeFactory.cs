@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Rampage.Messaging.Utils;
 
 namespace Rampage.Messaging.Hub
 {
@@ -10,29 +9,37 @@ namespace Rampage.Messaging.Hub
     {
         private Unsubscribe _unsubscribe;
 
-        private readonly ReadOnlyDictionary<Type, Action<TMessage>> _handlerByMessageType;
-
-        public ServiceNodeFactory()
-        {
-            var instance = Activator.CreateInstance<TService>();
-            var methodInfo = typeof(TService).GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static);
-            var dictionary = methodInfo
-                .Where(IsMessageHandler)
-                .ToDictionary(GetMessageType, GetMessageHandler(instance));
-            _handlerByMessageType = new ReadOnlyDictionary<Type, Action<TMessage>>(dictionary);
-        }
-
         public void Start(IMessageBus<TMessage> messageBus)
         {
-            _unsubscribe = messageBus.Subscribe(Combinators.Warbler<TMessage>(SelectHandler));
+            var instance = CreateInstance(messageBus.Publish);
+            var handlerByMessageType = typeof(TService)
+                .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
+                .Where(IsMessageHandler)
+                .ToDictionary(GetMessageType, GetMessageHandler(instance));
+            var unsubscribe = messageBus.Subscribe(SelectHandler(handlerByMessageType));
+            _unsubscribe = () =>
+            {
+                unsubscribe();
+                instance = default;
+            };
         }
 
-        private Action<TMessage> SelectHandler(TMessage message) =>
-            _handlerByMessageType.ContainsKey(message.GetType())
-                ? _handlerByMessageType[message.GetType()]
-                : _ => { };
+        private static Action<TMessage> SelectHandler(IDictionary<Type, Action<TMessage>> handlerByMessageType) =>
+            message =>{
+                if (handlerByMessageType.ContainsKey(message.GetType()))
+                    handlerByMessageType[message.GetType()](message);
+            };
 
         public void Stop() => _unsubscribe();
+
+        private static TService CreateInstance(Action<TMessage> dispatcher)
+        {
+            var type = typeof(TService);
+            var constructor = type.GetConstructor(new[] {typeof(Action<TMessage>)});
+            return constructor != null
+                ? (TService) constructor.Invoke(new object[] {dispatcher})
+                : Activator.CreateInstance<TService>();
+        }
 
         private static bool IsMessageHandler(MethodInfo method) =>
             method.ReturnType == typeof(void) && method.GetParameters().Length == 1 && method.GetParameters()

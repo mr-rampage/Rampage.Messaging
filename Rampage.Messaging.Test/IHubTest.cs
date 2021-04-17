@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rampage.Messaging.Bus;
 using Rampage.Messaging.Hub;
@@ -17,8 +18,6 @@ namespace Rampage.Messaging.Test
                 .Deploy(new ServiceNodeFactory<FakeService, FakeService.IMessage>());
             fixture.Start(bus);
             bus.Publish(new FakeService.DoWorkA());
-            bus.Publish(new FakeService.DoWorkB());
-            bus.Publish(new FakeService.DoWorkC());
             fixture.Stop();
         }
 
@@ -56,11 +55,24 @@ namespace Rampage.Messaging.Test
 
         private sealed class FakeService
         {
+            private readonly Action<IMessage> _dispatcher;
+
             public interface IMessage {}
+
+            public FakeService()
+            {
+                _dispatcher = _ => { };
+            }
+
+            public FakeService(Action<IMessage> dispatcher)
+            {
+                _dispatcher = dispatcher;
+            }
             
             public void HandleWorkA(DoWorkA _workA)
             {
                 Trace.WriteLine("A was called");
+                _dispatcher.Invoke(new DoWorkB());
             }
 
             public static void HandleWorkB(DoWorkB _workB)
