@@ -17,13 +17,19 @@ namespace Rampage.Messaging.Hub
         public IHub<T> Deploy(IServiceNode<T> serviceNode)
         {
             _services.Add(serviceNode);
+
+            if (_state == State.Started)
+                serviceNode.Start(_messageBus);
+            
             return this;
         }
 
         public IHub<T> Undeploy(IServiceNode<T> serviceNode)
         {
             serviceNode.Stop();
-            _services.Remove(serviceNode);
+            
+            if (_services.Contains(serviceNode))
+                _services.Remove(serviceNode);
 
             return this;
         }
