@@ -2,9 +2,9 @@
 
     <PropertyGroup>
         <TargetFrameworks>net48;net5.0</TargetFrameworks>
-        <PackageVersion>0.0.4</PackageVersion>
-        <AssemblyVersion>0.0.4</AssemblyVersion>
-        <FileVersion>0.0.4</FileVersion>
+        <PackageVersion>0.0.5</PackageVersion>
+        <AssemblyVersion>0.0.5</AssemblyVersion>
+        <FileVersion>0.0.5</FileVersion>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <Authors>Mr. Rampage</Authors>
         <Description>Simple internal messaging bus</Description>
@@ -13,7 +13,8 @@
         <RepositoryUrl>https://github.com/mr-rampage/Rampage.Messaging.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>message-bus eventbus csharp</PackageTags>
-        <PackageReleaseNotes>0.0.4 - Added ability to publish from service factory
+        <PackageReleaseNotes>0.0.5 - Decoupled creation from Service Node Factory
+0.0.4 - Added ability to publish from service factory
 0.0.3 - Removed IMessage requirement
 0.0.2 - Upgraded to .NET 5.0</PackageReleaseNotes>
     </PropertyGroup>
