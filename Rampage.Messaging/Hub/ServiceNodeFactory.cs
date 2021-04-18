@@ -7,11 +7,17 @@ namespace Rampage.Messaging.Hub
 {
     public sealed class ServiceNodeFactory<TService, TMessage> : IServiceNode<TMessage>
     {
+        private readonly Func<TService> _createInstance;
         private Unsubscribe _unsubscribe;
+
+        public ServiceNodeFactory(Func<TService> createInstance)
+        {
+            _createInstance = createInstance;
+        }
 
         public void Start(IMessageBus<TMessage> messageBus)
         {
-            var instance = CreateInstance(messageBus.Publish);
+            var instance = _createInstance();
             var handlerByMessageType = typeof(TService)
                 .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static)
                 .Where(IsMessageHandler)
@@ -31,15 +37,6 @@ namespace Rampage.Messaging.Hub
             };
 
         public void Stop() => _unsubscribe();
-
-        private static TService CreateInstance(Action<TMessage> dispatcher)
-        {
-            var type = typeof(TService);
-            var constructor = type.GetConstructor(new[] {typeof(Action<TMessage>)});
-            return constructor != null
-                ? (TService) constructor.Invoke(new object[] {dispatcher})
-                : Activator.CreateInstance<TService>();
-        }
 
         private static bool IsMessageHandler(MethodInfo method) =>
             method.ReturnType == typeof(void) && method.GetParameters().Length == 1 && method.GetParameters()

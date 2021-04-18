@@ -15,7 +15,7 @@ namespace Rampage.Messaging.Test
             var bus = new ParallelMessageBus<FakeService.IMessage>();
             var fixture = new HubNode<FakeService.IMessage>()
                 .Deploy(new FakeServiceNode(new FakeService()))
-                .Deploy(new ServiceNodeFactory<FakeService, FakeService.IMessage>());
+                .Deploy(new ServiceNodeFactory<FakeService, FakeService.IMessage>(() => new FakeService(bus.Publish)));
             fixture.Start(bus);
             bus.Publish(new FakeService.DoWorkA());
             fixture.Stop();
